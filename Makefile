@@ -4,23 +4,24 @@
 .PHONY: all merlin build build-deps run clean
 
 # --------------------------------------------------------------------
-all: build merlin
+all: build soltoarl merlin
 
-build: soltoarl
+build:
+	@dune build
 
 soltoarl:
 	$(MAKE) -C src soltoarl.exe
-	cp -f src/_build/default/soltoarl.exe .
+	cp -f _build/default/src/soltoarl.exe .
 
 merlin:
 	$(MAKE) -C src merlin
 
-run:
-	$(MAKE) -C src run
+check:
+	./check.sh
 
 clean:
-	$(MAKE) -C src clean
+	@dune clean
 	rm -fr soltoarl.exe
 
-build-deps:
-	opam install dune ppx_deriving ppx_deriving_yojson
+install:
+	@dune install

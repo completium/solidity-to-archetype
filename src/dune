@@ -1,10 +1,5 @@
-(env
-  (dev
-    (flags (:standard -rectypes -g -w Y -w Z -w -9 -w -23 -w +28 -w +33 -w -32)))
-  (release
-    (flags (:standard -rectypes))))
-
 (executable
-  (modules transform soltoarl)
-  (libraries solidityLib archetypeLib)
-  (name    soltoarl))
+  (name      soltoarl)
+  (modules   transform soltoarl)
+  (flags :standard -rectypes)
+  (libraries solidity_parser archetype))

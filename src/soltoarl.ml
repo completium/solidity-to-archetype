@@ -1,9 +1,12 @@
 open Transform
 
 let process (filename, channel) =
-  let _ast = SolidityLib.Io.parse_solidity ~name:filename channel in
+  let ast = Solidity_parser.Io.parse_solidity ~name:filename channel in
   let pt = transform ast in
-  Format.printf "%a" ArchetypeLib.Printer.pp_archetype pt
+  Format.printf "%a" Archetype.Printer.pp_archetype pt
+
+let close dispose channel =
+  if dispose then close_in channel
 
 let main () =
   let arg_list = Arg.align [] in
@@ -14,7 +17,7 @@ let main () =
     ]  in
 
   let ofilename = ref "" in
-  let ochannel : in_channel option ref = ref None  in
+  let ochannel : in_channel option ref = ref None in
   Arg.parse arg_list (fun s -> (ofilename := s;
                                   ochannel := Some (open_in s))) arg_usage;
   let filename, channel, dispose =
@@ -24,12 +27,12 @@ let main () =
 
   try
     process (filename, channel);
-    SolidityLib.Io.close dispose channel
+    close dispose channel
 
   with
-  | SolidityLib.Utils.ParseError exn ->
-    SolidityLib.Io.close dispose channel;
-    Format.eprintf "%a@." SolidityLib.Utils.pp_parse_error exn;
+  | Solidity_parser.Utils.ParseError exn ->
+    close dispose channel;
+    Format.eprintf "%a@." Solidity_parser.Utils.pp_parse_error exn;
     exit 1
 
 let _ = main ()
