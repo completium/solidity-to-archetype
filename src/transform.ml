@@ -27,10 +27,11 @@ let transform ast : archetype =
           | CPfunction (Some id, _, ms, _, _) when (List.fold_left (fun acc i -> match i with | Mpublic -> true | _ -> acc || false) false ms) ->
             let fun_id : string = Solidity_parser.Location.unloc id in
             let dummy_action_properties : action_properties = {
-              verif      = None;
-              calledby   = None;
-              condition  = None;
-              functions  = [];
+              calledby        = None;
+              accept_transfer = false;
+              require         = None;
+              verif           = None;
+              functions       = [];
             } in
             let effect = dumlocA Ebreak in
             [(dumlocA (Daction (dumlocA fun_id, [], dummy_action_properties, Some (effect, None), None)))]
